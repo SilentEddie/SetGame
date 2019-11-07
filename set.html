@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang=nl>
+<head>
+	<meta charset=utf-8>
+	<meta name=description content="Beschrijving van de webpagina">
+	<meta name=keywords content="trefwoord1, trefwoord2">
+	<title>titel van de pagina</title>
+</head>
+<body>
+<h2>set!</h2>
+<h3>game Board:</h3>
+<div id ="gameBoard">
+
+</div>
+<h3>all cards:</h3>
+<div id ="w">
+
+</div>
+</body>
+<script>
+const colorName = ["red","green","purple"];
+const shapeName = ["wiggly","diamond","oval"];
+const amountName = ["1","2","3"];
+const fillName = ["empty","striped","full"];
+const radix = 3;
+var gameBoard = [];
+var cards = [];
+
+function pickCards(numberOfCards){
+	for(let i = 0; i<numberOfCards; i++){
+		gameBoard.push(cards.pop());
+	}
+
+}
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
+
+
+for (let i =0; i<81; i++)
+{
+	let numbers = i.toString(radix)
+  let paddedNumbers = ("0000" + numbers).substr(-4,4);
+
+	cards.push(
+
+		{
+		 cardSum: paddedNumbers,
+		 cardnumber: i,
+		 color: paddedNumbers.substr(0,1),
+		 shape: paddedNumbers.substr(1,1),
+		 amount: paddedNumbers.substr(2,1),
+		 fill: paddedNumbers.substr(3,1)
+		}
+	);
+};
+
+cards = shuffle(cards);
+pickCards(9);
+for (let i =0; i<cards.length; i++)
+{
+	let color = cards[i].color;
+	let shape = cards[i].shape;
+	let amount = cards[i].amount;
+	let fill = cards[i].fill;
+	document.getElementById("w").innerHTML +=
+	(amountName[amount])+ " " +
+	(shapeName[shape])+ " " +
+	(fillName[fill])+ " " +
+	(colorName[color])+ " " +
+
+	"<br>";
+
+}
+
+for (let i =0; i<gameBoard.length; i++)
+{
+	let color = gameBoard[i].color;
+	let shape = gameBoard[i].shape;
+	let amount = gameBoard[i].amount;
+	let fill = gameBoard[i].fill;
+	document.getElementById("gameBoard").innerHTML +=
+	(amountName[amount])+ " " +
+	(shapeName[shape])+ " " +
+	(fillName[fill])+ " " +
+	(colorName[color])+ " " +
+
+	"<br>";
+
+}
+
+
+
+</script>
+
+</html>
