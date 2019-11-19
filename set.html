@@ -18,10 +18,33 @@
 </div>
 </body>
 <script>
+
 const colorName = ["red","green","purple"];
 const shapeName = ["wiggly","diamond","oval"];
 const amountName = ["1","2","3"];
 const fillName = ["empty","striped","full"];
+
+const cards2 = amountName
+	.flatMap(amount => colorName
+		.flatMap(color =>  fillName
+			.flatMap(fill => shapeName
+				.map(shape => {
+					return {amount:amount, color:color, fill:fill, shape:shape}
+		}))));
+
+
+const snacks = ChipsArray
+	.filter ( (chips) => chips.naam == "Käseln" )
+		.concat( ChocolateArray
+			.filter ( (choco) => choco.naam == "Choco Swing Biscuit-Galleta" ) );
+
+ if (games) {
+	 joost.geef(snacks, edd);
+	 Console.log("Games!");
+	 edd.beur();
+}
+
+
 const radix = 3;
 var gameBoard = [];
 var cards = [];
@@ -52,7 +75,37 @@ function shuffle(array) {
 }
 
 
+const values = [["red","green","purple"],["wiggly","diamond","oval"],["1","2","3"],["empty","striped","full"]];
+const cards1 = [...Array(81).keys()]											//1. maak een lege array van 81 lang
+	.map( (index) => {																			//2. neem van elk element de index, dat is een getal
+		return ("0000" + index.toString(radix)).substr(-4,4)	//maak van dat getal een string van 4 cijfers
+	})
+		.map( (nrString) => {																	//3. neem elke string , bv. "0212"
+			return [...nrString]																//maak een array daarvan, bv. [0,2,1,2]
+				.map( (nr,index) =>  values[index][nr] )				//3b. maar eerst vervang je elk element door waarden
+			})																									//uit values[][], bv. ["red","oval","2", "full"]
+			.map( ([c,s,a,f]) => {															//4. neem elke array en noem de elementen c,s,a,f
+				return {color:c, shape: s, amount: a, fill: f} 		//maak een object aan met die namen.
+			});																									//bv. {color: "red", shape: "oval", amount: "2", fill "full"}
 
+
+
+
+
+
+
+
+
+
+//["red","green","purple"].forEach
+
+//			["wiggly","diamond","oval"];
+//			["1","2","3"];
+//		["empty","striped","full"];
+
+//console.log(cards1);
+console.log(cards2);
+document.getElementById("gameBoard").innerHTML += cards1[9].shape  + "<br><br>";
 for (let i =0; i<81; i++)
 {
 	let numbers = i.toString(radix)
