@@ -35,6 +35,7 @@ const cards = amountName
 let gameBoard = [9];
 
 //const pickCards = () => gameBoard.map( (value) => cards.pop);
+console.log(cards);
 
 function pickCards() {
 	gameBoard.map( (value) => cards.pop);
@@ -42,13 +43,10 @@ function pickCards() {
 }
 
 function getDeckString() {
-	let test = "test";
-	let test2 = cards.
-		map( (card) => card.color + "<br>");
-
-
-
-	return test2;
+	return cards.
+		map( (card,index) => `${card.amount} ${card.color}
+		${card.fill} ${card.shape}<br>` ).
+			reduce ( (a,b) => a + b);
 
 }
 
