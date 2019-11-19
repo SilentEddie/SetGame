@@ -32,19 +32,6 @@ const cards2 = amountName
 					return {amount:amount, color:color, fill:fill, shape:shape}
 		}))));
 
-
-const snacks = ChipsArray
-	.filter ( (chips) => chips.naam == "Käseln" )
-		.concat( ChocolateArray
-			.filter ( (choco) => choco.naam == "Choco Swing Biscuit-Galleta" ) );
-
- if (games) {
-	 joost.geef(snacks, edd);
-	 Console.log("Games!");
-	 edd.beur();
-}
-
-
 const radix = 3;
 var gameBoard = [];
 var cards = [];
