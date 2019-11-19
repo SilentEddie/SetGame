@@ -32,38 +32,15 @@ const cards = amountName
 					return {amount:amount, color:color, fill:fill, shape:shape}
 		}))));
 
-let gameBoard = [9];
 
-//const pickCards = () => gameBoard.map( (value) => cards.pop);
-console.log(cards);
-
-function pickCards() {
-	gameBoard.map( (value) => cards.pop);
-
-}
-
-function getDeckString() {
-	return cards.
+function getCardsString(cardArray) {
+	return cardArray.
 		map( (card,index) => `${card.amount} ${card.color}
 		${card.fill} ${card.shape}<br>` ).
 			reduce ( (a,b) => a + b);
 }
 
 const shuffle = () => {
-  let currentIndex = cards.length, temporaryValue, randomIndex;
-
-  while (0 !== currentIndex) {
-
-    randomIndex = Math.floor(Math.random() * currentIndex--);
-
-    temporaryValue = cards[currentIndex];
-    cards[currentIndex] = cards[randomIndex];
-    cards[randomIndex] = temporaryValue;
-  }
-}
-
-
-const shuffle2 = () => {
 	cards.map( (v,k) => {
 		let random = Math.floor(Math.random() * cards.length);
 		let newV = cards[random];
@@ -72,18 +49,20 @@ const shuffle2 = () => {
 	})
 }
 
-const displayGameBoard= () =>
-	document.getElementById("gameBoard").innerHTML += "Komt nog"  + "<br>";
+const display = (array,element) => {
+	document.getElementById(element).innerHTML = getCardsString(array)
+}
 
-const displayDeck = () =>
-	document.getElementById("allCards").innerHTML += getDeckString() ;
 
-const fillGameBoard = () => "a";
-
-fillGameBoard();
+const pickCards = (number) => {
+	 return cards.splice(0,number);
+}
 
 const play = () => {
-	shuffle2();
+	shuffle();
+  const gameBoard = pickCards(9);
+	display(gameBoard, "gameBoard");
+	display(cards, "allCards");
 	displayDeck();
 	displayGameBoard();
 }
