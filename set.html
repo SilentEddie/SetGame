@@ -35,9 +35,9 @@ const cards = amountName
 
 const getCardString = (c) => `${c.amount} ${c.color} ${c.fill} ${c.shape}`
 
-const getStackString = (cardArray) => {
+const getStackString = (cardArray,breakString) => {
 	return cardArray.
-		map( (card) => (getCardString(card) +"<br>") ).
+		map( (card) => (getCardString(card) + breakString) ).
 			reduce ( (a,b) => a + b);
 }
 
@@ -51,18 +51,43 @@ const shuffle = () => {
 }
 
 const display = (array,element) => {
-	document.getElementById(element).innerHTML = getStackString(array)
+	document.getElementById(element).innerHTML = getStackString(array,"<br>")
+}
+
+const combiDisplay = (array, element) => {
+	array.forEach(combi => document.getElementById(element).innerHTML += getStackString(combi," & ") + "<br>" );
 }
 
 const pickCards = (number) => {
 	 return cards.splice(0,number);
 }
 
+const combinations = (cardArray) => {
+	return cardArray
+		.flatMap( (a, i) => cardArray
+			.slice(i+1)
+				.flatMap( (b,i2) => cardArray
+					.slice(i2+2+i)
+						.map( (c) => [a,b,c])
+				)
+		);
+}
+
+
+
 const play = () => {
 	shuffle();
   const gameBoard = pickCards(9);
 	display(gameBoard, "gameBoard");
 	display(cards, "allCards");
+	var combi = combinations(gameBoard);
+
+	combiDisplay(combi,"Combinations")
+
+
+
+console.log(result);
+
 }
 
 play();
