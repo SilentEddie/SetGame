@@ -10,19 +10,20 @@
 <h2>set!</h2>
 <h3>game Board:</h3>
 <div id ="gameBoard">
-
 </div>
-<h3>all cards:</h3>
+<h3>Combinations:</h3>
+<div id ="Combinations">
+</div>
+<h3>Deck:</h3>
 <div id ="allCards">
-
 </div>
 </body>
 <script>
 
 const colorName = ["red","green","purple"];
-const shapeName = ["wiggly","diamond","oval"];
+const shapeName = ["squiggle","diamond","oval"];
 const amountName = ["1","2","3"];
-const fillName = ["empty","striped","full"];
+const fillName = ["open","striped","full"];
 
 const cards = amountName
 	.flatMap(amount => colorName
@@ -32,11 +33,11 @@ const cards = amountName
 					return {amount:amount, color:color, fill:fill, shape:shape}
 		}))));
 
+const getCardString = (c) => `${c.amount} ${c.color} ${c.fill} ${c.shape}`
 
-function getCardsString(cardArray) {
+const getStackString = (cardArray) => {
 	return cardArray.
-		map( (card,index) => `${card.amount} ${card.color}
-		${card.fill} ${card.shape}<br>` ).
+		map( (card) => (getCardString(card) +"<br>") ).
 			reduce ( (a,b) => a + b);
 }
 
@@ -50,9 +51,8 @@ const shuffle = () => {
 }
 
 const display = (array,element) => {
-	document.getElementById(element).innerHTML = getCardsString(array)
+	document.getElementById(element).innerHTML = getStackString(array)
 }
-
 
 const pickCards = (number) => {
 	 return cards.splice(0,number);
@@ -63,8 +63,6 @@ const play = () => {
   const gameBoard = pickCards(9);
 	display(gameBoard, "gameBoard");
 	display(cards, "allCards");
-	displayDeck();
-	displayGameBoard();
 }
 
 play();
