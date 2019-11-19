@@ -73,20 +73,45 @@ const combinations = (cardArray) => {
 		);
 }
 
+const validcombinations = (combiArray) => {
+	return combiArray.filter( (combi) => isValidCombi(combi) );
+}
 
+const isValidCombi = (combi) => {
+
+	let result =
+	( ( (combi[0].amount == combi[1].amount) && (combi[1].amount == combi[2].amount) )
+	||
+	( (combi[0].amount != combi[1].amount) && (combi[1].amount != combi[2].amount) &&
+	(combi[0].amount != combi[2].amount) ) ) &&
+
+	( ( (combi[0].color == combi[1].color) && (combi[1].color == combi[2].color) )
+	||
+	( (combi[0].color != combi[1].color) && (combi[1].color != combi[2].color) &&
+	(combi[0].color != combi[2].color) ) ) &&
+
+	( ( (combi[0].fill == combi[1].fill) && (combi[1].fill == combi[2].fill) )
+  ||
+  ( (combi[0].fill != combi[1].fill) && (combi[1].fill != combi[2].fill) &&
+  (combi[0].fill != combi[2].fill) ) ) &&
+
+	( ( (combi[0].shape == combi[1].shape) && (combi[1].shape == combi[2].shape) )
+  ||
+	( (combi[0].shape != combi[1].shape) && (combi[1].shape != combi[2].shape) &&
+	(combi[0].shape != combi[2].shape) ) )
+
+	return result;
+
+}
 
 const play = () => {
 	shuffle();
-  const gameBoard = pickCards(9);
+  const gameBoard = pickCards(12);
 	display(gameBoard, "gameBoard");
 	display(cards, "allCards");
-	var combi = combinations(gameBoard);
-
-	combiDisplay(combi,"Combinations")
-
-
-
-console.log(result);
+	let combis = combinations(gameBoard);
+	combis = validcombinations(combis);
+	combiDisplay(combis,"Combinations")
 
 }
 
