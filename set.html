@@ -47,7 +47,6 @@ function getDeckString() {
 		map( (card,index) => `${card.amount} ${card.color}
 		${card.fill} ${card.shape}<br>` ).
 			reduce ( (a,b) => a + b);
-
 }
 
 const shuffle = () => {
@@ -63,15 +62,28 @@ const shuffle = () => {
   }
 }
 
+
+const shuffle2 = () => {
+	cards.map( (v,k) => {
+		let random = Math.floor(Math.random() * cards.length);
+		let newV = cards[random];
+		cards[random] = v;
+		return newV;
+	})
+}
+
 const displayGameBoard= () =>
 	document.getElementById("gameBoard").innerHTML += "Komt nog"  + "<br>";
 
 const displayDeck = () =>
 	document.getElementById("allCards").innerHTML += getDeckString() ;
 
+const fillGameBoard = () => "a";
+
+fillGameBoard();
 
 const play = () => {
-	shuffle();
+	shuffle2();
 	displayDeck();
 	displayGameBoard();
 }
