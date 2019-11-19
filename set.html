@@ -13,7 +13,7 @@
 
 </div>
 <h3>all cards:</h3>
-<div id ="w">
+<div id ="allCards">
 
 </div>
 </body>
@@ -24,7 +24,7 @@ const shapeName = ["wiggly","diamond","oval"];
 const amountName = ["1","2","3"];
 const fillName = ["empty","striped","full"];
 
-const cards2 = amountName
+const cards = amountName
 	.flatMap(amount => colorName
 		.flatMap(color =>  fillName
 			.flatMap(fill => shapeName
@@ -32,16 +32,26 @@ const cards2 = amountName
 					return {amount:amount, color:color, fill:fill, shape:shape}
 		}))));
 
-const radix = 3;
-var gameBoard = [];
-var cards = [];
+let gameBoard = [9];
 
-function pickCards(numberOfCards){
-	for(let i = 0; i<numberOfCards; i++){
-		gameBoard.push(cards.pop());
-	}
+//const pickCards = () => gameBoard.map( (value) => cards.pop);
+
+function pickCards() {
+	gameBoard.map( (value) => cards.pop);
 
 }
+
+function getDeckString() {
+	let test = "test";
+	let test2 = cards.
+		map( (card) => card.color + "<br>");
+
+
+
+	return test2;
+
+}
+
 function shuffle(array) {
   var currentIndex = array.length, temporaryValue, randomIndex;
 
@@ -61,91 +71,19 @@ function shuffle(array) {
   return array;
 }
 
+const displayGameBoard= () =>
+	document.getElementById("gameBoard").innerHTML += cards[9].shape  + "<br><br>";
 
-const values = [["red","green","purple"],["wiggly","diamond","oval"],["1","2","3"],["empty","striped","full"]];
-const cards1 = [...Array(81).keys()]											//1. maak een lege array van 81 lang
-	.map( (index) => {																			//2. neem van elk element de index, dat is een getal
-		return ("0000" + index.toString(radix)).substr(-4,4)	//maak van dat getal een string van 4 cijfers
-	})
-		.map( (nrString) => {																	//3. neem elke string , bv. "0212"
-			return [...nrString]																//maak een array daarvan, bv. [0,2,1,2]
-				.map( (nr,index) =>  values[index][nr] )				//3b. maar eerst vervang je elk element door waarden
-			})																									//uit values[][], bv. ["red","oval","2", "full"]
-			.map( ([c,s,a,f]) => {															//4. neem elke array en noem de elementen c,s,a,f
-				return {color:c, shape: s, amount: a, fill: f} 		//maak een object aan met die namen.
-			});																									//bv. {color: "red", shape: "oval", amount: "2", fill "full"}
+const displayDeck = () =>
+	document.getElementById("allCards").innerHTML += getDeckString() ;
 
 
-
-
-
-
-
-
-
-
-//["red","green","purple"].forEach
-
-//			["wiggly","diamond","oval"];
-//			["1","2","3"];
-//		["empty","striped","full"];
-
-//console.log(cards1);
-console.log(cards2);
-document.getElementById("gameBoard").innerHTML += cards1[9].shape  + "<br><br>";
-for (let i =0; i<81; i++)
-{
-	let numbers = i.toString(radix)
-  let paddedNumbers = ("0000" + numbers).substr(-4,4);
-
-	cards.push(
-
-		{
-		 cardSum: paddedNumbers,
-		 cardnumber: i,
-		 color: paddedNumbers.substr(0,1),
-		 shape: paddedNumbers.substr(1,1),
-		 amount: paddedNumbers.substr(2,1),
-		 fill: paddedNumbers.substr(3,1)
-		}
-	);
-};
-
-cards = shuffle(cards);
-pickCards(9);
-for (let i =0; i<cards.length; i++)
-{
-	let color = cards[i].color;
-	let shape = cards[i].shape;
-	let amount = cards[i].amount;
-	let fill = cards[i].fill;
-	document.getElementById("w").innerHTML +=
-	(amountName[amount])+ " " +
-	(shapeName[shape])+ " " +
-	(fillName[fill])+ " " +
-	(colorName[color])+ " " +
-
-	"<br>";
-
+const play = () => {
+	displayDeck();
+	displayGameBoard();
 }
 
-for (let i =0; i<gameBoard.length; i++)
-{
-	let color = gameBoard[i].color;
-	let shape = gameBoard[i].shape;
-	let amount = gameBoard[i].amount;
-	let fill = gameBoard[i].fill;
-	document.getElementById("gameBoard").innerHTML +=
-	(amountName[amount])+ " " +
-	(shapeName[shape])+ " " +
-	(fillName[fill])+ " " +
-	(colorName[color])+ " " +
-
-	"<br>";
-
-}
-
-
+play();
 
 </script>
 
