@@ -12,6 +12,9 @@
 <div id ="gameBoard">
 </div>
 <h3>Combinations:</h3>
+<table id = "combiTable" style="width:100%">
+
+</table>
 <div id ="Combinations">
 </div>
 <h3>Deck:</h3>
@@ -41,6 +44,14 @@ const getStackString = (cardArray,breakString) => {
 			reduce ( (a,b) => a + b);
 }
 
+const getStackCells = (cardArray) => {
+	return cardArray.
+		map( (card) => (getCardCell(card) ) ).
+			reduce ( (a,b) => a + b);
+}
+
+const getCardCell = (c) => `<td>${c.amount}</td><td>${c.color}</td><td>${c.fill}</td><td>${c.shape}</td>`
+
 const shuffle = () => {
 	cards.map( (v,k) => {
 		let random = Math.floor(Math.random() * cards.length);
@@ -56,6 +67,10 @@ const display = (array,element) => {
 
 const combiDisplay = (array, element) => {
 	array.forEach(combi => document.getElementById(element).innerHTML += getStackString(combi," & ") + "<br>" );
+}
+
+const combiColPlace = (array, element) => {
+	array.forEach(combi => document.getElementById(element).innerHTML += "<tr>" + getStackCells(combi) + "</tr>" );
 }
 
 const pickCards = (number) => {
@@ -111,8 +126,8 @@ const play = () => {
 	display(cards, "allCards");
 	let combis = combinations(gameBoard);
 	combis = validcombinations(combis);
-	combiDisplay(combis,"Combinations")
-
+	combiColPlace(combis,"combiTable")
+	//combiTable
 }
 
 play();
