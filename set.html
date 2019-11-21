@@ -4,12 +4,15 @@
 	<meta charset=utf-8>
 	<meta name=description content="Beschrijving van de webpagina">
 	<meta name=keywords content="trefwoord1, trefwoord2">
-	<title>titel van de pagina</title>
+	<title>titelman</title>
 </head>
 <body>
 <h2>set!</h2>
 <h3>game Board:</h3>
 <div id ="gameBoard">
+</div>
+<h3>Chosen cards:</h3>
+<div id ="selectedCards">
 </div>
 <h3>Combinations:</h3>
 <table id = "combiTable" style="width:100%">
@@ -22,21 +25,29 @@
 </div>
 </body>
 <script>
-
+const MAX_SET_SIZE = 3;
 const colorName = ["red","green","purple"];
 const shapeName = ["squiggle","diamond","oval"];
 const amountName = ["1","2","3"];
 const fillName = ["open","striped","full"];
+
+
+const deck = [];
+const discardPile = [];
+let gameBoard = [];
+let selectedCards = [];
+
+let i=0;
 
 const cards = amountName
 	.flatMap(amount => colorName
 		.flatMap(color =>  fillName
 			.flatMap(fill => shapeName
 				.map(shape => {
-					return {amount:amount, color:color, fill:fill, shape:shape}
+					return {id:i++, amount:amount, color:color, fill:fill, shape:shape}
 		}))));
 
-const getCardString = (c) => `${c.amount} ${c.color} ${c.fill} ${c.shape}`
+const getCardString = (c) => `<p onclick=selectCard(${c.id}) id=card_${c.id}>(${c.id}) ${c.amount} ${c.color} ${c.fill} ${c.shape}</p>`
 
 const getStackString = (cardArray,breakString) => {
 	return cardArray.
@@ -50,7 +61,7 @@ const getStackCells = (cardArray) => {
 			reduce ( (a,b) => a + b);
 }
 
-const getCardCell = (c) => `<td>${c.amount}</td><td>${c.color}</td><td>${c.fill}</td><td>${c.shape}</td>`
+const getCardCell = (c) => `<td>(${c.id}) ${c.amount}</td><td>${c.color}</td><td>${c.fill}</td><td>${c.shape}</td>`
 
 const shuffle = () => {
 	cards.map( (v,k) => {
@@ -62,7 +73,7 @@ const shuffle = () => {
 }
 
 const display = (array,element) => {
-	document.getElementById(element).innerHTML = getStackString(array,"<br>")
+	document.getElementById(element).innerHTML = getStackString(array,"")
 }
 
 const combiDisplay = (array, element) => {
@@ -121,7 +132,7 @@ const isValidCombi = (combi) => {
 
 const play = () => {
 	shuffle();
-  const gameBoard = pickCards(12);
+  	gameBoard = pickCards(12);
 	display(gameBoard, "gameBoard");
 	display(cards, "allCards");
 	let combis = combinations(gameBoard);
@@ -130,7 +141,47 @@ const play = () => {
 	//combiTable
 }
 
+const selectCard = (cardId) => {
+	if (selectedCards.length>=MAX_SET_SIZE)
+	{
+		return
+	}
+	let selectedCard = gameBoard.filter(e => e.id === cardId);
+	let cardAlreadySelected = selectedCards.filter(e => e.id === cardId);
+	if (cardAlreadySelected[0]) {
+		gameBoard.push(cardAlreadySelected[0]);
+		selectedCards = selectedCards.filter(e => e.id != cardId);//.remove(e => e.id === cardId);
+		document.getElementById("card_"+cardId).style.fontWeight = "90";
+	} else {
+		selectedCards.push(selectedCard[0]);
+		gameBoard = gameBoard.filter(e => e.id != cardId);
+		//gameBoard.remove(e => e.id === cardId);
+		document.getElementById("card_"+cardId).style.fontWeight = "900";
+	}
+
+	
+	display(gameBoard, "gameBoard");
+	display(selectedCards, "selectedCards");
+	if (selectedCards.length==MAX_SET_SIZE)
+	{
+		let validSet = isValidCombi(selectedCards)
+		if (validSet)
+		{
+			alert('goed man');
+		} else {
+			alert('je bent zelf een Set');
+		}
+	}
+
+}
+
 play();
+
+/*
+bool IsSet(cards[])
+bool PlayfieldContainsSet()
+void 
+*/
 
 </script>
 
