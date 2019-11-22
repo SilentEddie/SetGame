@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html>
     <body bgcolor="grey" font-color="grey">
-        <!-- 
-            <defs>
-              <pattern id="pattern-stripe" 
-                width="4" height="4" 
-                patternUnits="userSpaceOnUse"
-                patternTransform="rotate(45)">
-                <rect width="2" height="4" transform="translate(0,0)" fill="white"></rect>
-              </pattern>
-              <mask id="mask-stripe">
-                <rect x="0" y="0" width="100%" height="100%" fill="url(#pattern-stripe)" />
-              </mask>      
-            </defs>
-        -->
         <svg id="mySVG" width="850" height="800" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
+          <defs>
+              <pattern id="redStripes" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(90 2 2)">
+                <path d="M -1,2 l 6,0" stroke="#ff2600" stroke-width="1"/>
+              </pattern>
+              <pattern id="purpleStripes" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(90 2 2)">
+                <path d="M -1,2 l 6,0" stroke="#4a23a5" stroke-width="1"/>
+              </pattern>
+              <pattern id="greenStripes" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(90 2 2)">
+                <path d="M -1,2 l 6,0" stroke="#00c100" stroke-width="1"/>
+              </pattern>
+          </defs>
 
         </svg>
 
@@ -29,20 +27,41 @@
             let cardHeight = 250;
             let cardwidth = 150;
             let cardOffset = 10;
-            function getColor(colorNumber)
+            function applyColorAndFill(shape, fillNumber, colorNumber)
             {
+                let color = '#ffffff';//white
                 if (colorNumber==0)
                 {
-                    return '#ff2600';//red
+                    color = '#ff2600';//red
+                    shape.setAttributeNS(null,"fill",color);  
+                    if (fillNumber ==2) {
+                        shape.setAttributeNS(null,"fill","url(#redStripes)"); 
+                    }
                 }
                 if (colorNumber==1)
                 {
-                    return '#00c100';//green
+                    color = '#00c100';//green
+                    shape.setAttributeNS(null,"fill",color); 
+                    if (fillNumber ==2) {
+                        shape.setAttributeNS(null,"fill","url(#greenStripes)"); 
+                    } 
                 }
                 if (colorNumber==2)
                 {
-                    return '#4a23a5';//purple
+                    color = '#4a23a5';//purple
+                    shape.setAttributeNS(null,"fill",color);  
+                    if (fillNumber ==2) {
+                        shape.setAttributeNS(null,"fill","url(#purpleStripes)"); 
+                    } 
                 }
+
+                if (fillNumber ==1) {
+                    shape.setAttributeNS(null,"fill-opacity",0.0);
+                }
+
+                shape.setAttributeNS(null,"stroke",color);
+                shape.setAttributeNS(null,"stroke-width","1"); 
+                return shape;
             }
             function getShape(shapeNumber)
             {
@@ -80,6 +99,7 @@
                 shape.setAttributeNS(null,"d","m-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");
                 shape.setAttributeNS(null,"stroke","black");
                 shape.setAttributeNS(null,"stroke-width","1");
+
                 return shape;
             }
             function getEllipse()
@@ -129,13 +149,11 @@
                 group.setAttributeNS(null,"id","group_"+number);
 
                 let shape =  getShape(shapeType);
-                let color = getColor(colorType);
                 shape.setAttributeNS(null,"id","shape_"+number);
                 shape.setAttributeNS(null,"x",0);
                 shape.setAttributeNS(null,"y",0);
-                shape.setAttributeNS(null,"fill",color);
-                shape.setAttributeNS(null,"stroke",color);
-                shape.setAttributeNS(null,"stroke-width","1");           
+                shape = applyColorAndFill(shape, patternType, colorType)
+
                 group.appendChild(shape);
 
                 return group;
@@ -148,9 +166,10 @@
                 container.setAttributeNS(null,"width",cardwidth);
                 container.setAttributeNS(null,"x",xPos*(cardwidth + cardOffset));
                 container.setAttributeNS(null,"y",yPos*(cardHeight + cardOffset));
+                container.setAttributeNS(null,"onclick","alert('card_"+Id+"')");    
                 playField.appendChild(container);
 
-                let cardShape = createCardShape(Id, xPos, yPos);                
+                let cardShape = createCardShape(Id, xPos, yPos);            
                 container.appendChild(cardShape);
                 for (let i = 0; i<=number;i++)
                 {
