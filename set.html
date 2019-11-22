@@ -208,7 +208,7 @@ let i=0;
                 container.setAttributeNS(null,"width",cardwidth);
                 container.setAttributeNS(null,"x",xPos*(cardwidth + cardOffset));
                 container.setAttributeNS(null,"y",yPos*(cardHeight + cardOffset));
-                container.setAttributeNS(null,"onclick","alert('card_"+Id+"')");    
+                container.setAttributeNS(null,"onclick","selectCard("+Id+")");    
                 playField.appendChild(container);
 
                 let cardShape = createCardShape(Id, xPos, yPos);            
@@ -234,11 +234,11 @@ let i=0;
             {
                 for (let i = 0; i<fieldComposition.length;i++)
                 {
-	                fieldComposition.push([]);
+	                //fieldComposition.push([]);
 	                for (let j = 0; j<fieldComposition[i].length;j++)
 	                {
 	                	//var field = fieldComposition[i][j];
-	                	if (!fieldComposition[i][j]) {
+	                	if (fieldComposition[i][j]==undefined) {
 	                		fieldComposition[i][j] = Id;
             				return CreateCard(Id, j, i, color, shapeType, number, pattern);
 	                	}
@@ -344,8 +344,8 @@ const isValidCombi = (combi) => {
 
 const play = () => {
 	shuffle();
-  	gameBoard = pickCards(12);
 	initPlayField();
+  	gameBoard = pickCards(12);
 	gameBoard.forEach(c => placeCard(c.id, c.color, c.shape, c.amount, c.fill));
 	display(gameBoard, "gameBoard");
 	display(cards, "allCards");
