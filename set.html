@@ -9,7 +9,7 @@
 </head>
 
 <body style="background-color: lightgray;color: darkslategray;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-    <h2>Set!</h2>
+    <h2 id= "test">Set!</h2>
     <svg id="mySVG" width="850" height="800" xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink">
         <defs>
@@ -56,6 +56,7 @@
 
     function applyColorAndFill(shape, fillNumber, colorNumber) {
         let color = '#ffffff'; //white
+
         if (colorNumber == 0) {
             color = '#ff2600'; //red
             shape.setAttributeNS(null, "fill", color);
@@ -144,6 +145,7 @@
             "m1099 704c-56-42-121-72-184-83-70-13-106-8-198 30-283 117-487 14-487-245 0-87 14-141 45-172 35-34 71-30 140 16 65 43 138 70 193 70 19 0 76-14 126-31 189-66 357-29 451 99 80 109 87 274 14 326-33 23-60 20-100-10z"
             );
         shape.setAttributeNS(null, "transform-origin", "-12% -6%");
+        shape.setAttributeNS(null, "vector-effect","non-scaling-stroke");
         shape.setAttributeNS(null, "transform", "scale(.095)");
         return shape;
     }
