@@ -1,414 +1,405 @@
 <!DOCTYPE html>
 <html lang=nl>
+
 <head>
-	<meta charset=utf-8>
-	<meta name=description content="Beschrijving van de webpagina">
-	<meta name=keywords content="trefwoord1, trefwoord2">
-	<title>titelman</title>
+    <meta charset=utf-8>
+    <meta name=description content="Beschrijving van de webpagina">
+    <meta name=keywords content="trefwoord1, trefwoord2">
+    <title>Set!</title>
 </head>
-    <body bgcolor="grey" font-color="grey">
-<h2>set!</h2>
-        <svg id="mySVG" width="850" height="800" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" >
-          <defs>
-              <pattern id="redStripes" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(90 2 2)">
-                <path d="M -1,2 l 6,0" stroke="#ff2600" stroke-width="1"/>
-              </pattern>
-              <pattern id="purpleStripes" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(90 2 2)">
-                <path d="M -1,2 l 6,0" stroke="#4a23a5" stroke-width="1"/>
-              </pattern>
-              <pattern id="greenStripes" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(90 2 2)">
-                <path d="M -1,2 l 6,0" stroke="#00c100" stroke-width="1"/>
-              </pattern>
-          </defs>
 
-        </svg>
-<h3>game Board:</h3>
-<div id ="gameBoard">
-</div>
-<h3>Chosen cards:</h3>
-<div id ="selectedCards">
-</div>
-<h3>Combinations:</h3>
-<table id = "combiTable" style="width:100%">
+<body style="background-color: lightgray;color: darkslategray;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <h2>Set!</h2>
+    <svg id="mySVG" width="850" height="800" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink">
+        <defs>
+            <pattern id="redStripes" patternUnits="userSpaceOnUse" width="4" height="4"
+                patternTransform="rotate(90 2 2)">
+                <path d="M -1,2 l 6,0" stroke="#ff2600" stroke-width="1" />
+            </pattern>
+            <pattern id="purpleStripes" patternUnits="userSpaceOnUse" width="4" height="4"
+                patternTransform="rotate(90 2 2)">
+                <path d="M -1,2 l 6,0" stroke="#4a23a5" stroke-width="1" />
+            </pattern>
+            <pattern id="greenStripes" patternUnits="userSpaceOnUse" width="4" height="4"
+                patternTransform="rotate(90 2 2)">
+                <path d="M -1,2 l 6,0" stroke="#00c100" stroke-width="1" />
+            </pattern>
+        </defs>
 
-</table>
-<div id ="Combinations">
-</div>
-<h3>Deck:</h3>
-<div id ="allCards">
-</div>
+    </svg>
+    <h3 id="score">Score: 0</h3>
+    <h3 id="validCombis">Possible Combinations: 0</h3>
 </body>
 <script>
-const MAX_SET_SIZE = 3;
-/*
-const colorName = ["red","green","purple"];
-const shapeName = ["squiggle","diamond","oval"];
-const amountName = ["1","2","3"];
-const fillName = ["open","striped","full"];
-*/
-const colorName = [0,1,2];
-const shapeName = [0,1,2];
-const amountName = [0,1,2];
-const fillName = [0,1,2];
+    const MAX_SET_SIZE = 3;
 
-const deck = [];
-const discardPile = [];
-let gameBoard = [];
-let selectedCards = [];
+    let score = 0;
+    const deck = [];
+    const discardPile = [];
+    let gameBoard = [];
+    let selectedCards = [];
 
-let i=0;
-///////////
-//GRAPHICS
-//////////
-            var svgNS = "http://www.w3.org/2000/svg";
-            
-            let playField = document.getElementById("mySVG");
-            let cardHeight = 250;
-            let cardwidth = 150;
-            let cardOffset = 10;
-            const FIELD_ROWS = 3;
-            const FIELD_COLS = 4;
-            let fieldComposition = []
+    let i = 0;
+    ///////////
+    //GRAPHICS
+    //////////
+    var svgNS = "http://www.w3.org/2000/svg";
 
-            function applyColorAndFill(shape, fillNumber, colorNumber)
-            {
-                let color = '#ffffff';//white
-                if (colorNumber==0)
-                {
-                    color = '#ff2600';//red
-                    shape.setAttributeNS(null,"fill",color);  
-                    if (fillNumber ==2) {
-                        shape.setAttributeNS(null,"fill","url(#redStripes)"); 
-                    }
-                }
-                if (colorNumber==1)
-                {
-                    color = '#00c100';//green
-                    shape.setAttributeNS(null,"fill",color); 
-                    if (fillNumber ==2) {
-                        shape.setAttributeNS(null,"fill","url(#greenStripes)"); 
-                    } 
-                }
-                if (colorNumber==2)
-                {
-                    color = '#4a23a5';//purple
-                    shape.setAttributeNS(null,"fill",color);  
-                    if (fillNumber ==2) {
-                        shape.setAttributeNS(null,"fill","url(#purpleStripes)"); 
-                    } 
-                }
+    let playField = document.getElementById("mySVG");
+    let cardHeight = 250;
+    let cardwidth = 150;
+    let cardOffset = 10;
+    const FIELD_ROWS = 3;
+    const FIELD_COLS = 4;
+    let fieldComposition = []
 
-                if (fillNumber ==1) {
-                    shape.setAttributeNS(null,"fill-opacity",0.0);
-                }
-
-                shape.setAttributeNS(null,"stroke",color);
-                shape.setAttributeNS(null,"stroke-width","1"); 
-                return shape;
+    function applyColorAndFill(shape, fillNumber, colorNumber) {
+        let color = '#ffffff'; //white
+        if (colorNumber == 0) {
+            color = '#ff2600'; //red
+            shape.setAttributeNS(null, "fill", color);
+            if (fillNumber == 2) {
+                shape.setAttributeNS(null, "fill", "url(#redStripes)");
             }
-            function getShape(shapeNumber)
-            {
-                if (shapeNumber==0)
-                {
-                    return getEllipse();
-                }
-                if (shapeNumber==1)
-                {
-                    return getDiamond();
-                }
-                if (shapeNumber==2)
-                {
-                    return getSquiggle();
-                }
+        }
+        if (colorNumber == 1) {
+            color = '#00c100'; //green
+            shape.setAttributeNS(null, "fill", color);
+            if (fillNumber == 2) {
+                shape.setAttributeNS(null, "fill", "url(#greenStripes)");
             }
-            function getYPos(number, totalNumber){
-                return ((cardHeight-(totalNumber*75))/2)-25 + (number * 75);
-                 
-                let startPosition = 0;
-                let stepSize = 100;
-                if (totalNumber==0)
-                {                    
-                    startPosition = ((cardHeight-(totalNumber*75))/2)-25;
-                }
-                if (totalNumber==1)
-                {
-                    startPosition = cardHeight/2-25;
-                }
-                return startPosition+(number*stepSize);
+        }
+        if (colorNumber == 2) {
+            color = '#4a23a5'; //purple
+            shape.setAttributeNS(null, "fill", color);
+            if (fillNumber == 2) {
+                shape.setAttributeNS(null, "fill", "url(#purpleStripes)");
             }
-            function getStripedPath()
-            {
-                var shape = document.createElementNS(svgNS,"path"); 
-                shape.setAttributeNS(null,"d","m-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");
-                shape.setAttributeNS(null,"stroke","black");
-                shape.setAttributeNS(null,"stroke-width","1");
+        }
 
-                return shape;
-            }
-            function getEllipse()
-            {
-                var shape = document.createElementNS(svgNS,"ellipse"); 
-                shape.setAttributeNS(null,"id","shape");
-                shape.setAttributeNS(null,"cx",55);
-                shape.setAttributeNS(null,"cy",25);
-                shape.setAttributeNS(null,"rx",50);
-                shape.setAttributeNS(null,"ry",20);
-                shape.setAttributeNS(null,"stroke-width","1");
-                return shape;
-            }  
-            function getDiamond()
-            {
-                var shape = document.createElementNS(svgNS,"path"); 
-                shape.setAttributeNS(null,"d","m 50 0 50 25 -50 25 -50 -25 z");
-                return shape;
-            }  
-            function getSquiggle()
-            {
-                var shape = document.createElementNS(svgNS,"path"); 
-                shape.setAttributeNS(null,"d","m1099 704c-56-42-121-72-184-83-70-13-106-8-198 30-283 117-487 14-487-245 0-87 14-141 45-172 35-34 71-30 140 16 65 43 138 70 193 70 19 0 76-14 126-31 189-66 357-29 451 99 80 109 87 274 14 326-33 23-60 20-100-10z");
-                shape.setAttributeNS(null,"transform-origin", "-12% -6%");
-                shape.setAttributeNS(null,"transform", "scale(.095)");
-                return shape;
-            }              
-            
-            function createCardShape(Id, xPos, yPos)
-            {
-                var shape = document.createElementNS(svgNS,"rect");
-                shape.setAttributeNS(null,"id","card");
-                shape.setAttributeNS(null,"x",0);
-                shape.setAttributeNS(null,"y",0);
-                shape.setAttributeNS(null,"height",cardHeight);
-                shape.setAttributeNS(null,"width",cardwidth);
-                shape.setAttributeNS(null,"rx",5);
-                shape.setAttributeNS(null,"fill","white");
-                return shape;
-            }   
-            function CreateShape(cardId, number, totalNumber, colorType, shapeType, patternType)
-            {
-                let group = document.createElementNS(svgNS,"svg");
-                group.setAttributeNS(null,"x",25);
-                let yPos = getYPos(number, totalNumber)
-                group.setAttributeNS(null,"y",yPos);   
-                group.setAttributeNS(null,"id","group_"+number);
-                let shape =  getShape(shapeType);
-                shape.setAttributeNS(null,"id","shape_"+number);
-                shape.setAttributeNS(null,"x",0);
-                shape.setAttributeNS(null,"y",0);
-                shape = applyColorAndFill(shape, patternType, colorType)
+        if (fillNumber == 1) {
+            shape.setAttributeNS(null, "fill-opacity", 0.0);
+        }
 
-                group.appendChild(shape);
+        shape.setAttributeNS(null, "stroke", color);
+        shape.setAttributeNS(null, "stroke-width", "1");
+        return shape;
+    }
 
-                return group;
-            }
-            function CreateCard(Id, xPos, yPos, color, shapeType, number, pattern)
-            {
-                let container = document.createElementNS(svgNS,"svg");
-                container.setAttributeNS(null,"id","card_"+Id);
-                container.setAttributeNS(null,"height",cardHeight);
-                container.setAttributeNS(null,"width",cardwidth);
-                container.setAttributeNS(null,"x",xPos*(cardwidth + cardOffset));
-                container.setAttributeNS(null,"y",yPos*(cardHeight + cardOffset));
-                container.setAttributeNS(null,"onclick","selectCard("+Id+")");    
-                playField.appendChild(container);
+    function getShape(shapeNumber) {
+        if (shapeNumber == 0) {
+            return getEllipse();
+        }
+        if (shapeNumber == 1) {
+            return getDiamond();
+        }
+        if (shapeNumber == 2) {
+            return getSquiggle();
+        }
+    }
 
-                let cardShape = createCardShape(Id, xPos, yPos);            
-                container.appendChild(cardShape);
-                for (let i = 0; i<=number;i++)
-                {
-                    let shape = CreateShape(Id, i, number, color, shapeType, pattern);
-                    container.appendChild(shape);
+    function getYPos(number, totalNumber) {
+        return ((cardHeight - (totalNumber * 75)) / 2) - 25 + (number * 75);
+
+        let startPosition = 0;
+        let stepSize = 100;
+        if (totalNumber == 0) {
+            startPosition = ((cardHeight - (totalNumber * 75)) / 2) - 25;
+        }
+        if (totalNumber == 1) {
+            startPosition = cardHeight / 2 - 25;
+        }
+        return startPosition + (number * stepSize);
+    }
+
+    function getStripedPath() {
+        var shape = document.createElementNS(svgNS, "path");
+        shape.setAttributeNS(null, "d", "m-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");
+        shape.setAttributeNS(null, "stroke", "black");
+        shape.setAttributeNS(null, "stroke-width", "1");
+        return shape;
+    }
+
+    function getEllipse() {
+        var shape = document.createElementNS(svgNS, "ellipse");
+        shape.setAttributeNS(null, "id", "shape");
+        shape.setAttributeNS(null, "cx", 55);
+        shape.setAttributeNS(null, "cy", 25);
+        shape.setAttributeNS(null, "rx", 50);
+        shape.setAttributeNS(null, "ry", 20);
+        shape.setAttributeNS(null, "stroke-width", "1");
+        return shape;
+    }
+
+    function getDiamond() {
+        var shape = document.createElementNS(svgNS, "path");
+        shape.setAttributeNS(null, "d", "m 50 0 50 25 -50 25 -50 -25 z");
+        return shape;
+    }
+
+    function getSquiggle() {
+        var shape = document.createElementNS(svgNS, "path");
+        shape.setAttributeNS(null, "d",
+            "m1099 704c-56-42-121-72-184-83-70-13-106-8-198 30-283 117-487 14-487-245 0-87 14-141 45-172 35-34 71-30 140 16 65 43 138 70 193 70 19 0 76-14 126-31 189-66 357-29 451 99 80 109 87 274 14 326-33 23-60 20-100-10z"
+            );
+        shape.setAttributeNS(null, "transform-origin", "-12% -6%");
+        shape.setAttributeNS(null, "transform", "scale(.095)");
+        return shape;
+    }
+
+    function CreateShape(cardId, number, totalNumber, colorType, shapeType, patternType) {
+        let group = document.createElementNS(svgNS, "svg");
+        group.setAttributeNS(null, "x", 25);
+        let yPos = getYPos(number, totalNumber)
+        group.setAttributeNS(null, "y", yPos);
+        group.setAttributeNS(null, "id", "group_" + number);
+        let shape = getShape(shapeType);
+        shape.setAttributeNS(null, "id", "shape_" + number);
+        shape.setAttributeNS(null, "x", 0);
+        shape.setAttributeNS(null, "y", 0);
+        shape = applyColorAndFill(shape, patternType, colorType)
+
+        group.appendChild(shape);
+
+        return group;
+    }
+
+    function createCardShape(Id, xPos, yPos) {
+        var shape = document.createElementNS(svgNS, "rect");
+        shape.setAttributeNS(null, "id", Id);
+        shape.setAttributeNS(null, "x", 0);
+        shape.setAttributeNS(null, "y", 0);
+        shape.setAttributeNS(null, "height", cardHeight);
+        shape.setAttributeNS(null, "width", cardwidth);
+        shape.setAttributeNS(null, "rx", 5);
+        shape.setAttributeNS(null, "fill", "white");
+        shape.setAttributeNS(null, "onclick", "selectCard("+Id+")");
+        shape.setAttributeNS(null, "stroke", "black");
+        shape.setAttributeNS(null, "stroke-width", "0");
+        return shape;
+    }
+    function setCardSelected(cardId) {
+        var thecard = document.getElementById(cardId);
+        thecard.setAttributeNS(null, "stroke-width", "3");
+    }
+    function setCardUnselected(cardId) {
+        var thecard = document.getElementById(cardId);
+        thecard.setAttributeNS(null, "stroke-width", "0");
+    }
+    function discardCard(cardId) {
+        console.log("id: "+cardId)
+
+        for (let i = 0; i < fieldComposition.length; i++) {
+            for (let j = 0; j < fieldComposition[i].length; j++) {
+                if (fieldComposition[i][j] == cardId) {
+                    fieldComposition[i][j] = undefined;
                 }
             }
-            function initPlayField()
-            {
-                for (let i = 0; i<FIELD_ROWS;i++)
-                {
-	                fieldComposition.push([]);
-	                for (let j = 0; j<FIELD_COLS;j++)
-	                {
-	                	fieldComposition[i].push(undefined);
-	                }
+        }
+
+        var containter = document.getElementById("container_" + cardId);     
+        containter.remove();
+    }
+
+
+    function CreateCard(Id, xPos, yPos, color, shapeType, number, pattern) {
+        let container = document.createElementNS(svgNS, "svg");
+        container.setAttributeNS(null, "id", "container_" + Id);
+        container.setAttributeNS(null, "height", cardHeight);
+        container.setAttributeNS(null, "width", cardwidth);
+        container.setAttributeNS(null, "x", xPos * (cardwidth + cardOffset));
+        container.setAttributeNS(null, "y", yPos * (cardHeight + cardOffset));
+        playField.appendChild(container);
+
+        let cardShape = createCardShape(Id, xPos, yPos);
+        container.appendChild(cardShape);
+        for (let i = 0; i <= number; i++) {
+            let shape = CreateShape(Id, i, number, color, shapeType, pattern);
+            container.appendChild(shape);
+        }
+    }
+
+    function initPlayField() {
+        for (let i = 0; i < FIELD_ROWS; i++) {
+            fieldComposition.push([]);
+            for (let j = 0; j < FIELD_COLS; j++) {
+                fieldComposition[i].push(undefined);
+            }
+        }
+    }
+
+    function placeCard(Id, color, shapeType, number, pattern) {
+        for (let i = 0; i < fieldComposition.length; i++) {
+            for (let j = 0; j < fieldComposition[i].length; j++) {
+                if (fieldComposition[i][j] == undefined) {
+                    fieldComposition[i][j] = Id;
+                    console.log('placesd ' + Id)
+                    return CreateCard(Id, j, i, color, shapeType, number, pattern);
                 }
             }
-            function placeCard(Id, color, shapeType, number, pattern)
-            {
-                for (let i = 0; i<fieldComposition.length;i++)
-                {
-	                //fieldComposition.push([]);
-	                for (let j = 0; j<fieldComposition[i].length;j++)
-	                {
-	                	//var field = fieldComposition[i][j];
-	                	if (fieldComposition[i][j]==undefined) {
-	                		fieldComposition[i][j] = Id;
-            				return CreateCard(Id, j, i, color, shapeType, number, pattern);
-	                	}
-	                }
-                }        	
+        }
+    }
+
+
+
+    /////////////
+    //GAME LOGIC
+    ///////////
+    const colorName = [0, 1, 2];
+    const shapeName = [0, 1, 2];
+    const amountName = [0, 1, 2];
+    const fillName = [0, 1, 2];
+
+    const cards = amountName
+        .flatMap(amount => colorName
+            .flatMap(color => fillName
+                .flatMap(fill => shapeName
+                    .map(shape => {
+                        return {
+                            id: i++,
+                            amount: amount,
+                            color: color,
+                            fill: fill,
+                            shape: shape
+                        }
+                    }))));
+
+    const getCardString = (c) =>
+        `(${c.id}) ${c.amount} ${c.color} ${c.fill} ${c.shape}`
+
+    const getStackString = (cardArray, breakString) => {
+        return cardArray.
+        map((card) => (getCardString(card) + breakString)).
+        reduce((a, b) => a + b);
+    }
+
+    const getStackCells = (cardArray) => {
+        return cardArray.
+        map((card) => (getCardCell(card))).
+        reduce((a, b) => a + b);
+    }
+
+    const getCardCell = (c) => `<td>(${c.id}) ${c.amount}</td><td>${c.color}</td><td>${c.fill}</td><td>${c.shape}</td>`
+
+    const shuffle = () => {
+        let usedRandoms = []
+        cards.map((v, k) => {
+            //while usedRandoms.Constains
+            let random = Math.floor(Math.random() * cards.length);
+            let newV = cards[random];
+            cards[random] = v;
+            return newV;
+        })
+
+        for (let i = 0; i < cards.length; i++) {
+            //console.log(cards[i].id);
+        }
+
+    }
+    
+    const pickCards = (number) => {
+        return cards.splice(0, number);
+    }
+
+    const combinations = (cardArray) => {
+        return cardArray
+            .flatMap((a, i) => cardArray
+                .slice(i + 1)
+                .flatMap((b, i2) => cardArray
+                    .slice(i2 + 2 + i)
+                    .map((c) => [a, b, c])
+                )
+            );
+    }
+
+    const validCombinations = (combiArray) => {
+        return combiArray.filter((combi) => isValidCombi(combi));
+    }
+
+    const checkValidCombinations = () => {
+        let combis = combinations(gameBoard);
+        let validcombis = validCombinations(combis);
+
+        var validCombiString = document.getElementById('validCombis');
+        validCombiString.innerHTML = "Possible Combinations: " + validcombis.length;
+    }
+
+    const isValidCombi = (combi) => {
+
+        let result =
+            (((combi[0].amount == combi[1].amount) && (combi[1].amount == combi[2].amount)) ||
+                ((combi[0].amount != combi[1].amount) && (combi[1].amount != combi[2].amount) &&
+                    (combi[0].amount != combi[2].amount))) &&
+
+            (((combi[0].color == combi[1].color) && (combi[1].color == combi[2].color)) ||
+                ((combi[0].color != combi[1].color) && (combi[1].color != combi[2].color) &&
+                    (combi[0].color != combi[2].color))) &&
+
+            (((combi[0].fill == combi[1].fill) && (combi[1].fill == combi[2].fill)) ||
+                ((combi[0].fill != combi[1].fill) && (combi[1].fill != combi[2].fill) &&
+                    (combi[0].fill != combi[2].fill))) &&
+
+            (((combi[0].shape == combi[1].shape) && (combi[1].shape == combi[2].shape)) ||
+                ((combi[0].shape != combi[1].shape) && (combi[1].shape != combi[2].shape) &&
+                    (combi[0].shape != combi[2].shape)))
+
+        return result;
+
+    }
+    const ScoreIncrement = () => {
+        score++;
+        var scoreString = document.getElementById('score');
+        scoreString.innerHTML = "Score: " + score;
+    }
+
+
+    const play = () => {
+        shuffle();
+        initPlayField();
+        gameBoard = pickCards(12);
+        gameBoard.forEach(c => {placeCard(c.id, c.color, c.shape, c.amount, c.fill)});
+        checkValidCombinations();
+    }
+
+    const selectCard = (cardId) => {
+        if (selectedCards.length >= MAX_SET_SIZE) {
+            return
+        }
+        let cardAlreadySelected = selectedCards.find(obj => {return obj.id === cardId});
+        if (cardAlreadySelected) {
+            setCardUnselected(cardId);
+            gameBoard.push(cardAlreadySelected);
+            selectedCards = selectedCards.filter(e => e.id != cardId);
+        } else {
+            let selectedCard = gameBoard.find(obj => {return obj.id === cardId});
+            setCardSelected(cardId);
+            selectedCards.push(selectedCard);
+            gameBoard = gameBoard.filter(e => e.id != cardId);
+        }
+
+        if (selectedCards.length == MAX_SET_SIZE) {
+            let validSet = isValidCombi(selectedCards)
+            if (validSet) {
+                selectedCards.forEach(card => discardCard(card.id));
+                newCards = pickCards(MAX_SET_SIZE);
+                newCards.forEach(c => {console.log(c.id);placeCard(c.id, c.color, c.shape, c.amount, c.fill);gameBoard.push(c)});
+                ScoreIncrement();
+                checkValidCombinations();
+            } else {
+                alert('je bent zelf een Set');
+                for (let i = 0; i < selectedCards.length; i++) {
+                    let card = selectedCards[i];
+                    gameBoard.push(card);
+                    setCardUnselected(card.id);                    
+                }
             }
+            selectedCards=[];
+        }
 
+    }
 
-
-/////////////
-//GAME LOGIC
-///////////
-const cards = amountName
-	.flatMap(amount => colorName
-		.flatMap(color =>  fillName
-			.flatMap(fill => shapeName
-				.map(shape => {
-					return {id:i++, amount:amount, color:color, fill:fill, shape:shape}
-		}))));
-
-const getCardString = (c) => `<p onclick=selectCard(${c.id}) id=card_${c.id}>(${c.id}) ${c.amount} ${c.color} ${c.fill} ${c.shape}</p>`
-
-const getStackString = (cardArray,breakString) => {
-	return cardArray.
-		map( (card) => (getCardString(card) + breakString) ).
-			reduce ( (a,b) => a + b);
-}
-
-const getStackCells = (cardArray) => {
-	return cardArray.
-		map( (card) => (getCardCell(card) ) ).
-			reduce ( (a,b) => a + b);
-}
-
-const getCardCell = (c) => `<td>(${c.id}) ${c.amount}</td><td>${c.color}</td><td>${c.fill}</td><td>${c.shape}</td>`
-
-const shuffle = () => {
-	cards.map( (v,k) => {
-		let random = Math.floor(Math.random() * cards.length);
-		let newV = cards[random];
-		cards[random] = v;
-		return newV;
-	})
-}
-
-const display = (array,element) => {
-	document.getElementById(element).innerHTML = getStackString(array,"")
-}
-
-const combiDisplay = (array, element) => {
-	array.forEach(combi => document.getElementById(element).innerHTML += getStackString(combi," & ") + "<br>" );
-}
-
-const combiColPlace = (array, element) => {
-	array.forEach(combi => document.getElementById(element).innerHTML += "<tr>" + getStackCells(combi) + "</tr>" );
-}
-
-const pickCards = (number) => {
-	 return cards.splice(0,number);
-}
-
-const combinations = (cardArray) => {
-	return cardArray
-		.flatMap( (a, i) => cardArray
-			.slice(i+1)
-				.flatMap( (b,i2) => cardArray
-					.slice(i2+2+i)
-						.map( (c) => [a,b,c])
-				)
-		);
-}
-
-const validcombinations = (combiArray) => {
-	return combiArray.filter( (combi) => isValidCombi(combi) );
-}
-
-const isValidCombi = (combi) => {
-
-	let result =
-	( ( (combi[0].amount == combi[1].amount) && (combi[1].amount == combi[2].amount) )
-	||
-	( (combi[0].amount != combi[1].amount) && (combi[1].amount != combi[2].amount) &&
-	(combi[0].amount != combi[2].amount) ) ) &&
-
-	( ( (combi[0].color == combi[1].color) && (combi[1].color == combi[2].color) )
-	||
-	( (combi[0].color != combi[1].color) && (combi[1].color != combi[2].color) &&
-	(combi[0].color != combi[2].color) ) ) &&
-
-	( ( (combi[0].fill == combi[1].fill) && (combi[1].fill == combi[2].fill) )
-  ||
-  ( (combi[0].fill != combi[1].fill) && (combi[1].fill != combi[2].fill) &&
-  (combi[0].fill != combi[2].fill) ) ) &&
-
-	( ( (combi[0].shape == combi[1].shape) && (combi[1].shape == combi[2].shape) )
-  ||
-	( (combi[0].shape != combi[1].shape) && (combi[1].shape != combi[2].shape) &&
-	(combi[0].shape != combi[2].shape) ) )
-
-	return result;
-
-}
-
-const play = () => {
-	shuffle();
-	initPlayField();
-  	gameBoard = pickCards(12);
-	gameBoard.forEach(c => placeCard(c.id, c.color, c.shape, c.amount, c.fill));
-	display(gameBoard, "gameBoard");
-	display(cards, "allCards");
-	let combis = combinations(gameBoard);
-	combis = validcombinations(combis);
-	combiColPlace(combis,"combiTable")
-	//combiTable
-}
-
-const selectCard = (cardId) => {
-	if (selectedCards.length>=MAX_SET_SIZE)
-	{
-		return
-	}
-	let selectedCard = gameBoard.filter(e => e.id === cardId);
-	let cardAlreadySelected = selectedCards.filter(e => e.id === cardId);
-	if (cardAlreadySelected[0]) {
-		gameBoard.push(cardAlreadySelected[0]);
-		selectedCards = selectedCards.filter(e => e.id != cardId);
-		document.getElementById("card_"+cardId).style.fontWeight = "90";
-	} else {
-		selectedCards.push(selectedCard[0]);
-		gameBoard = gameBoard.filter(e => e.id != cardId);
-		document.getElementById("card_"+cardId).style.fontWeight = "900";
-	}
-
-	
-	display(gameBoard, "gameBoard");
-	display(selectedCards, "selectedCards");
-	if (selectedCards.length==MAX_SET_SIZE)
-	{
-		let validSet = isValidCombi(selectedCards)
-		if (validSet)
-		{
-			alert('goed man');
-		} else {
-			alert('je bent zelf een Set');
-		}
-	}
-
-}
-
-play();
-/*
-            CreateCard(0, 0, 0, 0, 1, 0, 1);
-            CreateCard(1, 1, 0, 1, 1, 1, 2);
-            CreateCard(2, 2, 0, 2, 0, 2, 0);
-            CreateCard(3, 3, 0, 0, 2, 2, 0);
-
-            CreateCard(4, 1, 1, 1, 0, 1, 2);
-            CreateCard(5, 2, 1, 2, 2, 0, 1);
-            CreateCard(6, 0, 1, 1, 2, 0, 1);
-            CreateCard(7, 3, 1, 0, 0, 2, 0);
-
-            CreateCard(8, 0, 2, 1, 1, 1, 2);
-            CreateCard(9, 1, 2, 2, 2, 1, 2);
-            CreateCard(10, 2, 2, 1, 0, 0, 2);
-            CreateCard(11, 3, 2, 0, 1, 2, 2);
-*/
-            //place this card on the playField
-            //tell me the proprties of this card
-            //remove these cards from the Playfield
-            //
-        </script>
+    play();
+</script>
 
 </html>
