@@ -10,6 +10,8 @@
 </head>
 
 <body style="background-color: lightgray;color: darkslategray;font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+
+
     <h2>Set!</h2>
     <svg id="mySVG" width="850" height="800" xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -34,7 +36,7 @@
 </body>
 <script>
     const MAX_SET_SIZE = 3;
-
+    let dealSound = new sound("deal.mp3");
     let score = 0;
     const deck = [];
     const discardPile = [];
@@ -227,12 +229,18 @@
         }
     }
 
+
+
+
+
     function placeCard(Id, color, shapeType, number, pattern) {
         for (let i = 0; i < fieldComposition.length; i++) {
             for (let j = 0; j < fieldComposition[i].length; j++) {
                 if (fieldComposition[i][j] == undefined) {
                     fieldComposition[i][j] = Id;
+                    dealSound.play();
                     return CreateCard(Id, j, i, color, shapeType, number, pattern);
+
                 }
             }
         }
@@ -262,37 +270,13 @@
                         }
                     }))));
 
-    const getCardString = (c) =>
-        `(${c.id}) ${c.amount} ${c.color} ${c.fill} ${c.shape}`
-
-    const getStackString = (cardArray, breakString) => {
-        return cardArray.
-        map((card) => (getCardString(card) + breakString)).
-        reduce((a, b) => a + b);
-    }
-
-    const getStackCells = (cardArray) => {
-        return cardArray.
-        map((card) => (getCardCell(card))).
-        reduce((a, b) => a + b);
-    }
-
-    const getCardCell = (c) => `<td>(${c.id}) ${c.amount}</td><td>${c.color}</td><td>${c.fill}</td><td>${c.shape}</td>`
-
     const shuffle = () => {
-        let usedRandoms = []
         cards.map((v, k) => {
-            //while usedRandoms.Constains
             let random = Math.floor(Math.random() * cards.length);
             let newV = Object.assign({}, cards[random]);
             cards[random] = Object.assign({}, v);
             return Object.assign({}, newV);
         })
-
-        for (let i = 0; i < cards.length; i++) {
-            console.log(cards[i].id);
-        }
-
     }
 
     const pickCards = (number) => {
@@ -311,7 +295,7 @@
     }
 
     const validCombinations = (combiArray) => {
-        return combiArray.filter((combi) => isValidCombi(combi));
+        return combiArray.filter((combi) => isValidCombination(combi));
     }
 
     const checkValidCombinations = () => {
@@ -322,7 +306,7 @@
         validCombiString.innerHTML = "Possible Combinations: " + validcombis.length;
     }
 
-    const isValidCombi = (combi) => {
+    const isValidCombination = (combi) => {
 
         let result =
             (((combi[0].amount == combi[1].amount) && (combi[1].amount == combi[2].amount)) ||
@@ -355,7 +339,11 @@
         shuffle();
         initPlayField();
         gameBoard = pickCards(12);
-        gameBoard.forEach(c => {placeCard(c.id, c.color, c.shape, c.amount, c.fill)});
+        for (let i=0; i<gameBoard.length;i++){
+          let c=gameBoard[i];
+          //placeCard(c.id, c.color, c.shape, c.amount, c.fill) ;
+          setTimeout(function(){ placeCard(c.id, c.color, c.shape, c.amount, c.fill) ; }, 100+(i*100));
+        };
         checkValidCombinations();
     }
 
@@ -376,7 +364,7 @@
         }
 
         if (selectedCards.length == MAX_SET_SIZE) {
-            let validSet = isValidCombi(selectedCards)
+            let validSet = isValidCombination(selectedCards)
             if (validSet) {
                 selectedCards.forEach(card => discardCard(card.id));
                 newCards = pickCards(MAX_SET_SIZE);
@@ -395,6 +383,22 @@
         }
 
     }
+
+    function sound(src) {
+      this.sound = document.createElement("audio");
+      this.sound.src = src;
+      this.sound.setAttribute("preload", "auto");
+      this.sound.setAttribute("controls", "none");
+      this.sound.style.display = "none";
+      document.body.appendChild(this.sound);
+      this.play = function(){
+        this.sound.play();
+      }
+      this.stop = function(){
+        this.sound.pause();
+      }
+    }
+
 
     play();
 </script>
