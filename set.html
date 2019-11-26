@@ -198,7 +198,7 @@
             }
         }
 
-        var containter = document.getElementById("container_" + cardId);     
+        var containter = document.getElementById("container_" + cardId);
         containter.remove();
     }
 
@@ -289,7 +289,7 @@
             let random = Math.floor(Math.random() * cards.length);
             let newV = cards[random];
             cards[random] = v;
-            return newV;
+            return Object.assign({}, newV);
         })
 
         for (let i = 0; i < cards.length; i++) {
@@ -297,7 +297,7 @@
         }
 
     }
-    
+
     const pickCards = (number) => {
         return cards.splice(0, number);
     }
@@ -391,7 +391,7 @@
                 for (let i = 0; i < selectedCards.length; i++) {
                     let card = selectedCards[i];
                     gameBoard.push(card);
-                    setCardUnselected(card.id);                    
+                    setCardUnselected(card.id);
                 }
             }
             selectedCards=[];
