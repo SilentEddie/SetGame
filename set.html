@@ -288,7 +288,7 @@
             //while usedRandoms.Constains
             let random = Math.floor(Math.random() * cards.length);
             let newV = cards[random];
-            cards[random] = v;
+            cards[random] = Object.assign({}, v);
             return Object.assign({}, newV);
         })
 
