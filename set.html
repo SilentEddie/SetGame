@@ -38,7 +38,7 @@
     const MAX_SET_SIZE = 3;
     let dealSound = new sound("deal.mp3");
     let score = 0;
-    const deck = [];
+    let deck = [];
     const discardPile = [];
     let gameBoard = [];
     let selectedCards = [];
@@ -187,9 +187,7 @@
         var thecard = document.getElementById(cardId);
         thecard.setAttributeNS(null, "stroke-width", "0");
     }
-    function discardCard(cardId) {
-        console.log("id: "+cardId)
-
+    function discardCardFromPlayfIeld(cardId) {
         for (let i = 0; i < fieldComposition.length; i++) {
             for (let j = 0; j < fieldComposition[i].length; j++) {
                 if (fieldComposition[i][j] == cardId) {
@@ -230,9 +228,6 @@
     }
 
 
-
-
-
     function placeCard(Id, color, shapeType, number, pattern) {
         for (let i = 0; i < fieldComposition.length; i++) {
             for (let j = 0; j < fieldComposition[i].length; j++) {
@@ -256,7 +251,7 @@
     const amountName = [0, 1, 2];
     const fillName = [0, 1, 2];
 
-    const cards = amountName
+    const getDeckOfCards = () => amountName
         .flatMap(amount => colorName
             .flatMap(color => fillName
                 .flatMap(fill => shapeName
@@ -270,17 +265,26 @@
                         }
                     }))));
 
-    const shuffle = () => {
-        cards.map((v, k) => {
+    const shuffle = (cards) => {
+        let shuffledCards = []
+        while (cards.length>0) {
             let random = Math.floor(Math.random() * cards.length);
-            let newV = Object.assign({}, cards[random]);
-            cards[random] = Object.assign({}, v);
-            return Object.assign({}, newV);
-        })
+            var card = cards.splice(random, 1)[0];
+            shuffledCards.push(card);
+        }
+        return shuffledCards;
     }
 
     const pickCards = (number) => {
-        return cards.splice(0, number);
+        if (deck.length<number) {
+            deck = deck.concat(discardPile);
+            deck = shuffle(deck);            
+        }
+        return deck.splice(0, number); 
+    }
+
+    const moveCardToDiscardPile = (card) => {
+        discardPile.push(card);
     }
 
     const combinations = (cardArray) => {
@@ -336,12 +340,12 @@
 
 
     const play = () => {
-        shuffle();
+        deck = getDeckOfCards();
+        deck = shuffle(deck);
         initPlayField();
         gameBoard = pickCards(12);
         for (let i=0; i<gameBoard.length;i++){
           let c=gameBoard[i];
-          //placeCard(c.id, c.color, c.shape, c.amount, c.fill) ;
           setTimeout(function(){ placeCard(c.id, c.color, c.shape, c.amount, c.fill) ; }, 100+(i*100));
         };
         checkValidCombinations();
@@ -366,9 +370,15 @@
         if (selectedCards.length == MAX_SET_SIZE) {
             let validSet = isValidCombination(selectedCards)
             if (validSet) {
-                selectedCards.forEach(card => discardCard(card.id));
+                selectedCards.forEach( card => { 
+                    discardCardFromPlayfIeld(card.id);
+                    moveCardToDiscardPile(card);
+                    });
                 newCards = pickCards(MAX_SET_SIZE);
-                newCards.forEach(c => {console.log(c.id);placeCard(c.id, c.color, c.shape, c.amount, c.fill);gameBoard.push(c)});
+                newCards.forEach(c => {
+                    gameBoard.push(c);
+                    placeCard(c.id, c.color, c.shape, c.amount, c.fill);
+                    });
                 ScoreIncrement();
                 checkValidCombinations();
             } else {
@@ -381,7 +391,6 @@
             }
             selectedCards=[];
         }
-
     }
 
     function sound(src) {
